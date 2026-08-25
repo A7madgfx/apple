@@ -41,12 +41,12 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             DEVELOPMENT_TEAM="" \
             clean build \
-            SYMROOT=build
+            -derivedDataPath build
 
       - name: Package as unsigned IPA
         run: |
           mkdir -p Payload
-          cp -R "build/Release-iphoneos/GainTrack.app" Payload/
+          cp -R "build/Build/Products/Release-iphoneos/GainTrack.app" Payload/
           zip -r GainTrack-unsigned.ipa Payload
 
       - name: Upload IPA artifact
