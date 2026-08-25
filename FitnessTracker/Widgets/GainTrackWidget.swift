@@ -18,9 +18,11 @@ struct GainTrackEntry: TimelineEntry {
     let targetWeightKg: Double
 }
 
+private let defaultEntry = GainTrackEntry(date: .now, muscleGroup: "صدر", streak: 12, waterCupsToday: 4, weightKg: 63.5, targetWeightKg: 75)
+
 struct GainTrackTimelineProvider: TimelineProvider {
     func placeholder(in context: Context) -> GainTrackEntry {
-        GainTrackEntry(date: .now, muscleGroup: "صدر", streak: 12, waterCupsToday: 4, weightKg: 63.5, targetWeightKg: 75)
+        defaultEntry
     }
 
     func getSnapshot(in context: Context, completion: @escaping (GainTrackEntry) -> Void) {
@@ -40,7 +42,7 @@ struct GainTrackTimelineProvider: TimelineProvider {
             for: DailyLog.self, WaterIntakeLog.self, UserGoal.self,
             configurations: ModelConfiguration(groupContainer: .identifier("group.com.gaintrack.app"))
         ) else {
-            return placeholder(in: .init())
+            return defaultEntry
         }
         let context = ModelContext(container)
         let todayStart = TrackingDay.today()
@@ -72,8 +74,6 @@ struct GainTrackTimelineProvider: TimelineProvider {
         )
     }
 }
-
-private let placeholderEntry = GainTrackEntry(date: .now, muscleGroup: "صدر", streak: 12, waterCupsToday: 4, weightKg: 63.5, targetWeightKg: 75)
 
 struct GainTrackWidgetView: View {
     @Environment(\.widgetFamily) private var family
