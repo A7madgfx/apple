@@ -1,0 +1,108 @@
+name: GainTrack
+options:
+  bundleIdPrefix: com.gaintrack
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: 5.0
+    MARKETING_VERSION: 1.0.0
+    CURRENT_PROJECT_VERSION: 1
+    TARGETED_DEVICE_FAMILY: "1"
+    DEVELOPMENT_LANGUAGE: ar
+    SWIFT_STRICT_CONCURRENCY: complete
+
+packages:
+  ZIPFoundation:
+    url: https://github.com/weichsel/ZIPFoundation.git
+    from: 0.9.19
+
+targets:
+  GainTrack:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+      - path: Core
+      - path: Features
+      - path: Shortcuts
+      - path: Resources
+    resources:
+      - path: Resources
+    dependencies:
+      - package: ZIPFoundation
+      - target: GainTrackWidgetExtension
+        embed: true
+    entitlements:
+      path: App/GainTrack.entitlements
+      properties:
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.gaintrack.app
+        com.apple.developer.icloud-services:
+          - CloudKit
+        com.apple.security.application-groups:
+          - group.com.gaintrack.app
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: GainTrack
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        NSCameraUsageDescription: "GainTrack يحتاج الكاميرا لتوثيق المهام اليومية بالصور."
+        NSPhotoLibraryAddUsageDescription: "لتصدير صورك للمكتبة عند طلبك فقط."
+        NSUserNotificationsUsageDescription: "لتذكيرك بمواعيد الدواء والمكملات والمية."
+        UIBackgroundModes:
+          - fetch
+          - remote-notification
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.gaintrack.app
+        INFOPLIST_KEY_UILaunchScreen_Generation: "YES"
+
+  GainTrackWidgetExtension:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Widgets
+      - path: Core/Models
+      - path: Core/Utilities
+      - path: Core/Extensions
+    entitlements:
+      path: Widgets/WidgetExtension.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.gaintrack.app
+    info:
+      path: Widgets/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.gaintrack.app.widget
+        SKIP_INSTALL: "YES"
+
+  GainTrackTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Tests
+    dependencies:
+      - target: GainTrack
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.gaintrack.app.tests
+
+schemes:
+  GainTrack:
+    build:
+      targets:
+        GainTrack: all
+    test:
+      targets:
+        - GainTrackTests
+    run:
+      config: Debug
