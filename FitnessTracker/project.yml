@@ -28,9 +28,6 @@ targets:
       - path: Core
       - path: Features
       - path: Shortcuts
-      - path: Resources
-    resources:
-      - path: Resources
     dependencies:
       - package: ZIPFoundation
       - target: GainTrackWidgetExtension
