@@ -20,7 +20,7 @@ enum PrayerTimeCalculator {
         calendar.timeZone = timeZone
         let comps = calendar.dateComponents([.year, .month, .day], from: date)
         guard let year = comps.year, let month = comps.month, let day = comps.day,
-              let dayStart = calendar.date(from: DateComponents(year: year, month: month, day: day, hour: 0, minute: 0, second: 0, timeZone: timeZone))
+              let dayStart = calendar.date(from: DateComponents(timeZone: timeZone, year: year, month: month, day: day, hour: 0, minute: 0, second: 0))
         else {
             return DailyPrayerSchedule(date: date, latitude: latitude, longitude: longitude, method: method, asrMethod: asrMethod, entries: [])
         }
