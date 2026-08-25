@@ -1,0 +1,53 @@
+name: Build unsigned GainTrack IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'FitnessTracker/**'
+      - '.github/workflows/build-gaintrack-ipa.yml'
+
+jobs:
+  build:
+    runs-on: macos-14
+    defaults:
+      run:
+        working-directory: FitnessTracker
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build unsigned .app
+        run: |
+          xcodebuild \
+            -project GainTrack.xcodeproj \
+            -scheme GainTrack \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            DEVELOPMENT_TEAM="" \
+            clean build \
+            SYMROOT=build
+
+      - name: Package as unsigned IPA
+        run: |
+          mkdir -p Payload
+          cp -R "build/Release-iphoneos/GainTrack.app" Payload/
+          zip -r GainTrack-unsigned.ipa Payload
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: GainTrack-unsigned-ipa
+          path: FitnessTracker/GainTrack-unsigned.ipa
