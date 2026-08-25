@@ -16,6 +16,10 @@ enum LocationError: LocalizedError {
 
 protocol LocationServicing: AnyObject {
     var authorizationStatus: CLAuthorizationStatus { get }
+    /// Fires whenever the system authorization status changes (including asynchronously,
+    /// after the user answers the permission dialog) — lets callers react instead of
+    /// depending on exact call ordering around `requestWhenInUseAuthorization()`.
+    var authorizationChanged: AnyPublisher<CLAuthorizationStatus, Never> { get }
     func requestWhenInUseAuthorization()
     /// Returns the current location once, without continuous tracking (battery friendly).
     func currentLocation() async throws -> CLLocation
@@ -27,13 +31,22 @@ final class LocationService: NSObject, LocationServicing, CLLocationManagerDeleg
     private let manager = CLLocationManager()
     private var continuation: CheckedContinuation<CLLocation, Error>?
     private let significantChangeMeters: CLLocationDistance = 5000
+    private let authorizationSubject = PassthroughSubject<CLAuthorizationStatus, Never>()
 
     var authorizationStatus: CLAuthorizationStatus { manager.authorizationStatus }
+    var authorizationChanged: AnyPublisher<CLAuthorizationStatus, Never> { authorizationSubject.eraseToAnyPublisher() }
 
     override init() {
         super.init()
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+    }
+
+    /// Modern (iOS 14+) authorization-change callback. `requestWhenInUseAuthorization()`
+    /// shows the system dialog asynchronously and returns immediately — this is the only
+    /// reliable signal that the user has actually answered it.
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        authorizationSubject.send(manager.authorizationStatus)
     }
 
     func requestWhenInUseAuthorization() {

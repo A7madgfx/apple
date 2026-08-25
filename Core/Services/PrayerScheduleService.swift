@@ -14,12 +14,22 @@ final class PrayerScheduleService: ObservableObject {
     private let notificationManager: NotificationManager
     private var lastLocation: CLLocation?
     private var midnightTimer: Timer?
+    private var cancellables = Set<AnyCancellable>()
 
     init(locationService: LocationServicing, settings: SettingsStore, notificationManager: NotificationManager) {
         self.locationService = locationService
         self.settings = settings
         self.notificationManager = notificationManager
         scheduleMidnightRefresh()
+
+        // requestWhenInUseAuthorization() shows the system dialog asynchronously and
+        // returns immediately, so a refresh() called right after it can easily race the
+        // user's actual answer and fail. Retry automatically the moment the OS reports
+        // the real (possibly newly-granted) status, instead of depending on timing.
+        locationService.authorizationChanged
+            .filter { $0 == .authorizedWhenInUse || $0 == .authorizedAlways }
+            .sink { [weak self] _ in Task { await self?.refresh() } }
+            .store(in: &cancellables)
     }
 
     /// Full refresh: get current location (or fall back to last-known), recompute, and
