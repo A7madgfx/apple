@@ -58,6 +58,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.gaintrack.app
         INFOPLIST_KEY_UILaunchScreen_Generation: "YES"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
 
   GainTrackWidgetExtension:
     type: app-extension
