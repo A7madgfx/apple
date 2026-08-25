@@ -32,15 +32,11 @@ targets:
       - package: ZIPFoundation
       - target: GainTrackWidgetExtension
         embed: true
-    entitlements:
-      path: App/GainTrack.entitlements
-      properties:
-        com.apple.developer.icloud-container-identifiers:
-          - iCloud.com.gaintrack.app
-        com.apple.developer.icloud-services:
-          - CloudKit
-        com.apple.security.application-groups:
-          - group.com.gaintrack.app
+    # No entitlements by default (App Groups / CloudKit) — see README for enabling
+    # them on a properly provisioned (paid Apple Developer account) build. Requesting
+    # entitlements an ad-hoc/sideloaded signing identity can't satisfy causes the OS
+    # to kill the app at launch with no error, which is worse than the widget/iCloud
+    # sync simply not being available.
     info:
       path: App/Info.plist
       properties:
@@ -68,11 +64,6 @@ targets:
       - path: Core/Models
       - path: Core/Utilities
       - path: Core/Extensions
-    entitlements:
-      path: Widgets/WidgetExtension.entitlements
-      properties:
-        com.apple.security.application-groups:
-          - group.com.gaintrack.app
     info:
       path: Widgets/Info.plist
       properties:

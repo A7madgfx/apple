@@ -23,8 +23,6 @@ final class SettingsStore: ObservableObject {
         static let longitude = "settings.longitude"
         static let placemarkName = "settings.placemarkName"
         static let hasCompletedOnboarding = "settings.hasCompletedOnboarding"
-        static let lastQuranPage = "settings.lastQuranPage"
-        static let lastQuranSurah = "settings.lastQuranSurah"
     }
 
     @Published var enabledPrayers: Set<Prayer> {
@@ -57,12 +55,6 @@ final class SettingsStore: ObservableObject {
     @Published var hasCompletedOnboarding: Bool {
         didSet { defaults.set(hasCompletedOnboarding, forKey: Keys.hasCompletedOnboarding) }
     }
-    @Published var lastQuranPage: Int {
-        didSet { defaults.set(lastQuranPage, forKey: Keys.lastQuranPage) }
-    }
-    @Published var lastQuranSurah: Int {
-        didSet { defaults.set(lastQuranSurah, forKey: Keys.lastQuranSurah) }
-    }
 
     /// Security-scoped bookmark for the user-picked custom audio file (Files/Documents picker).
     var customAudioBookmark: Data? {
@@ -85,8 +77,6 @@ final class SettingsStore: ObservableObject {
         self.lastKnownLongitude = defaults.object(forKey: Keys.longitude) as? Double
         self.placemarkName = defaults.string(forKey: Keys.placemarkName)
         self.hasCompletedOnboarding = defaults.bool(forKey: Keys.hasCompletedOnboarding)
-        self.lastQuranPage = defaults.object(forKey: Keys.lastQuranPage) as? Int ?? 1
-        self.lastQuranSurah = defaults.object(forKey: Keys.lastQuranSurah) as? Int ?? 1
     }
 
     func isPrayerEnabled(_ prayer: Prayer) -> Bool { enabledPrayers.contains(prayer) }

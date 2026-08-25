@@ -6,9 +6,6 @@ struct RootTabView: View {
             HomeView()
                 .tabItem { Label("الرئيسية", systemImage: "house.fill") }
 
-            QuranIndexView()
-                .tabItem { Label("القرآن", systemImage: "book.fill") }
-
             AzkarHomeView()
                 .tabItem { Label("الأذكار", systemImage: "hands.sparkles.fill") }
 

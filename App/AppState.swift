@@ -14,13 +14,12 @@ final class AppState: NSObject, ObservableObject {
     let notificationManager: NotificationManager
     let cameraService: CameraService
     let recognitionService: PrayerMatRecognitionService
-    let quranService: QuranService
     let azkarService: AzkarService
 
     @Published var activeAlarm: ActivePrayerAlarm?
     @Published var route: Route = .home
 
-    enum Route: Hashable { case home, quran, azkar, settings }
+    enum Route: Hashable { case home, azkar, settings }
 
     override init() {
         let settings = SettingsStore()
@@ -33,11 +32,9 @@ final class AppState: NSObject, ObservableObject {
         self.audioManager = PrayerAudioManager(settings: settings)
         self.cameraService = CameraService()
         self.recognitionService = PrayerMatRecognitionService()
-        self.quranService = QuranService()
         self.azkarService = AzkarService()
         super.init()
 
-        AppServiceLocator.quranService = quranService
         AppServiceLocator.azkarService = azkarService
         notificationManager.registerCategories()
         UNUserNotificationCenter.current().delegate = self

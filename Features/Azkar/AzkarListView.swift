@@ -93,7 +93,3 @@ struct AzkarListView: View {
         }
     }
 }
-
-extension AppServiceLocator {
-    static var azkarService: AzkarService!
-}
