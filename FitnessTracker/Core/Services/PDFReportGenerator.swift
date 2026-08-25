@@ -45,7 +45,7 @@ struct PDFReportGenerator {
             let summary = """
             الالتزام: \(Int(adherence))٪  •  الأيام المكتملة: \(completedDays)/\(scoped.count)
             الوزن الحالي: \(scoped.last?.weightKg.map { String(format: "%.1f", $0) } ?? "-") كجم
-            الهدف: \(goal.startWeightKg, specifier: "%.0f") ➔ \(goal.targetWeightKg, specifier: "%.0f") كجم
+            الهدف: \(String(format: "%.0f", goal.startWeightKg)) ➔ \(String(format: "%.0f", goal.targetWeightKg)) كجم
             """
             (summary as NSString).draw(in: CGRect(x: 40, y: 80, width: 532, height: 90), withAttributes: bodyAttrs)
 

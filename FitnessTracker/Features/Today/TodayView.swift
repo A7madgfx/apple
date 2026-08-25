@@ -143,8 +143,6 @@ private extension TaskKind {
     }
 }
 
-extension TaskKind: Identifiable {}
-
 private struct TimelineRow: View {
     let completion: TaskCompletion
     let onTap: () -> Void

@@ -39,7 +39,7 @@ final class CameraService: NSObject, ObservableObject {
     }
 
     func capturePhoto() async -> UIImage? {
-        await withCheckedContinuation { continuation in
+        await withCheckedContinuation { (continuation: CheckedContinuation<UIImage?, Never>) in
             self.continuation = continuation
             let settings = AVCapturePhotoSettings()
             output.capturePhoto(with: settings, delegate: self)
@@ -47,7 +47,7 @@ final class CameraService: NSObject, ObservableObject {
     }
 }
 
-extension CameraService: AVCapturePhotoOutputDelegate {
+extension CameraService: AVCapturePhotoCaptureDelegate {
     nonisolated func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
         let image = photo.fileDataRepresentation().flatMap(UIImage.init(data:))
         Task { @MainActor in
